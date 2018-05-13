@@ -23,7 +23,7 @@
         "chai": "^4.1.2",
         "sails": "^1.0"
     },
-    "preinstall": "node preset.js",
+    "postinstall": "node preset.js",
     "constant": {
         "src": "/command.js",
         "dest": "/../../task.js"

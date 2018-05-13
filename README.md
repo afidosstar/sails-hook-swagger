@@ -36,19 +36,19 @@ Configure hook as express middleware.
 
 Key              | Example value                 | Description
 ---------------- | ----------------------------- |:---------------------
-`apiVersion`     | '1.0'                         | Your api version.
-`swaggerVersion` | '2.0'                         | Swagger version.
-`swaggerURL`     | '/api/docs'                   | Path to use for swagger ui web interface.
-`swaggerJSON`    | '/api-docs.json'              | Path to use for swagger ui JSON.
-`basePath`       | sails.config.appUrl           | The basePath for swagger.js
-`info`           | { title: '', description: ''} | [Metadata][info] about the API
-`apis`           | ['./api/docs/User.yml']       | Define your api array.
-`middleware`     | fn                            | Function before response.
-`custom`         | {folder: sails.config.appPath + '/assets/docs'} | Path to folder where `custom-swagger.css` and `custom-swagger.js` are stored
+`apiVersion`     | '1.0'                         | Your api version. (**optional**)
+`swaggerVersion` | '2.0'                         | Swagger version.(**optional**)
+`swaggerURL`     | '/api/docs'                   | Path to use for swagger ui web interface.(**required**)
+`swaggerJSON`    | '/api-docs.json'              | Path to use for swagger ui JSON.(**required**)
+`basePath`       | process.env.HOST_NAME \| \| 'http(s)://localhost:1337'      | The basePath for swagger.js .(**required**)
+`info`           | { title: '', description: ''} | [Metadata][info] about the API (**optional**)
+`apis`           | ['./api/docs/User.yml']       | Define your api array. (**optional**)
+`ui`             | 'new'                         | Value list complet is:  `new`, `last` or `custom`. Default is `new` 
+`uiIndex`        | 'index.html'                  | Index of ui .Default is `index.html`
+`uiPath`         | '/path-of-swagger-ui'         | if ui= custom, you must specify this,otherwise that will throw error
+`folder`         |'/assets/docs'                 | Path to folder where `custom-swagger.css` and `custom-swagger.js` are stored (**optional**)
 
 > Note:
-> * `sails.config.appPath` is provided by sails js
-> * `sails.config.appUrl` is a environment variable, please see: [sails environment variables](http://sailsjs.org/documentation/reference/application/sails-get-base-url)
 > * Currently the implementation for personalization is very basic, you can place the folder for the customization files in any convenient folder of your application, for example `assets/docs`, however the name for the css/js files are mandatory. For properly operation of the hook please preserve the name for `custom-swagger.css` and `custom-swagger.js`
 > * Files placed in your customization folder are availables as static assets, For example if your customization folder is `assets/docs` any file placed on the folder is available in the url `{host path}/api/docs/{file path/name}`
 
@@ -106,8 +106,14 @@ Next stape execute this command-line:
 ```sh
 $ sails generate swagger
 ```
-we wille see this :
-![](https://raw.githubusercontent.com/afidosstar/sails-hook-swagger/master/simples/picture-3.png)
+we will see :
+
+![](https://github.com/afidosstar/sails-hook-swagger/raw/master/simples/picture-3.png)
+
+you can also specify filename like:
+sails generate swagger my-api.yml
+
+> Note: commande line can support yml and json output
 
 ## Inject files for look and feel customization, a JS and CSS file
 
@@ -236,6 +242,7 @@ That&rsquo;s it!
 - [sails-swagger](https://github.com/tjwebb/sails-swagger)
 - [sails-swagr](https://github.com/qbanguy/sails-swagr)
 - [swagger-ui](https://github.com/swagger-api/swagger-ui)
+- [sails-hook-swagger](https://github.com/afidosstar/sails-hook-swagger)
 
 
 ## License
@@ -245,5 +252,5 @@ The [MIT](https://github.com/jasancheg/sails-custom-swagger-hook/blob/master/LIC
 
 [npm-url]: https://npmjs.org/package/sails-custom-swagger-hook
 [npm-image]: https://badge.fury.io/js/sails-custom-swagger-hook.svg?style=flat
-[daviddm-url]: https://david-dm.org/jasancheg/sails-custom-swagger-hook
-[daviddm-image]: http://img.shields.io/david/jasancheg/sails-custom-swagger-hook.svg?style=flat
+[daviddm-url]: https://david-dm.org/afidosstar/sails-hook-swagger.svg
+[daviddm-image]: https://david-dm.org/afidosstar/sails-hook-swagger.svg
