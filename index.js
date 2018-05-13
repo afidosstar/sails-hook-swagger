@@ -34,6 +34,8 @@ module.exports = function defineSwaggerHook(sails) {
     info: options.info 
   };
 
+  console.log(__dirname +options.uiPath);
+
   return {
 
     configure: function(){
@@ -86,6 +88,7 @@ module.exports = function defineSwaggerHook(sails) {
         let fullname = path.resolve(sails.config.rootPath,filename)
         if(extRegExp.test(fullname) && fs.existsSync(fullname)){
           let content = /\.(json)$/.test(filename)? await readJSON(fullname): await readYml(fullname);
+          console.log(api.paths||{},content.paths||{});
           api.paths = _.merge(api.paths||{},content.paths||{})
           api.definitions = _.merge(api.definitions||{},content.definitions||{})
         }
@@ -138,13 +141,15 @@ function generate(opt) {
     throw new Error('For custom ui ,you must specify uiPath');
   }
 
+  opt.uiIndex = opt.uiIndex || 'index.html';
   if(/^last|new$/i.test(opt.ui)){
     opt.uiPath = path.join(__dirname,opt.ui + '-ui');
+    opt.uiPathIndex = path.join(__dirname, 'ui',opt.ui ,opt.uiIndex);
+  }else{
+    opt.uiPathIndex = path.join(opt.uiPath , opt.uiIndex);
   }
 
 
-  opt.uiIndex =  opt.uiIndex || 'index.html';
-  opt.uiPathIndex = path.join(opt.uiPath , opt.uiIndex);
   opt.folder = opt.folder || path.join(__dirname,'/assets')
   opt.apiVersion = opt.apiVersion || '1.0';
   opt.swagger = opt.swagger || '1.0';
@@ -153,6 +158,7 @@ function generate(opt) {
         return url.parse(opt.basePath + opt.swaggerJSON).path
     }
   })
+  console.log(opt)
   console.log(
     chalk.blue('Swagger info: '),
     chalk.gray('------------------------------------------------------')
