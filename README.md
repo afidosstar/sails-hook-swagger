@@ -70,7 +70,7 @@ Read:
 
 ## Sails Integration
 
-Modify the `config/swagger.js` to look like:
+Create the `config/swagger.js` to look like:
 
 ```js
 module.exports.swagger = {
