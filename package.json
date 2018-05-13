@@ -1,6 +1,6 @@
 {
     "name": "@afidoss/sails-hook-swagger",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "a brief description of your hook",
     "main": "index.js",
     "keywords": ["sails","hook","sails-hook","swagger","generator","hook-swagger","sails-swagger","sails-hook-swagger","afidoss","api","api generate doc"],
