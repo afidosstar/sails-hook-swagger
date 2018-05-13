@@ -42,7 +42,7 @@ module.exports = function defineSwaggerHook(sails) {
         let express = require('express')
         let  swagger = express()
         assetsPath  = options.swaggerURL;
-        swagger.use(assetsPath,express.static(path.join(__dirname, options.uiPath)))
+        swagger.use(assetsPath,express.static(options.uiPath))
         swagger.use(assetsPath,express.static(options.folder))
         swagger.use(options.swaggerJSON, function (req, res) {
           return res.json(api)
