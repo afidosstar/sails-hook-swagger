@@ -26,10 +26,5 @@
     "repository": {
         "type": "git",
         "url": "git@github.com:afidosstar/sails-hook-swagger.git"
-      },
-    "postinstall": "node preset.js",
-    "constant": {
-        "src": "/command.js",
-        "dest": "/../../task.js"
-    }
+      } 
 }
