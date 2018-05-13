@@ -1,6 +1,6 @@
 {
     "name": "@afidoss/sails-hook-swagger",
-    "version": "1.0.13",
+    "version": "1.1.0",
     "description": "a brief description of your hook",
     "main": "index.js",
     "keywords": [
