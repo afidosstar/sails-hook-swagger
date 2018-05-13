@@ -70,9 +70,9 @@ module.exports = function defineSwaggerHook(sails) {
      * @param {Function} done
      */
     initialize: async function (done) {
-
+      let extRegExp = /\.(json|yml|yaml)$/;
       if(options.docsFile && fs.existsSync(options.swaggerDocsFile)){
-        if(!/\.(json|yml|yaml)$/.test(options.swaggerDocsFile)){
+        if(!extRegExp.test(options.swaggerDocsFile)){
           throw new Error("Unknow extension.Extension alowed are: json, yml, yaml");
        }
         api = _.merge(/\.(json)$/.test(options.swaggerDocsFile)?
@@ -80,8 +80,15 @@ module.exports = function defineSwaggerHook(sails) {
         await readYml(options.swaggerDocsFile)
         ,api)
       }else{
-        api = _.merge(swaggerGenerator.generate(sails),api)
+        api = _.merge(swaggerGenerator.generate(sails), api)
       }
+      (options.apis||[]).reduce((filename,acc) => {
+        if(extRegExp.test(filename)){
+          let content = /\.(json)$/.test(filename)? await readJSON(path.resolve(sails.config.rootPath,filename)): await readYml(filename);
+          api.paths = _.merge(api.paths||{},content.paths||{})
+          api.definitions = _.merge(api.definitions||{},content.definitions||{})
+        }
+      },api)
     
       return done();
 

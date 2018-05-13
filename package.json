@@ -1,15 +1,20 @@
 {
-    "name": "@swagger/sails-hook-swagger",
-    "version": "0.0.0",
+    "name": "@afidoss/sails-hook-swagger",
+    "version": "0.0.1",
     "description": "a brief description of your hook",
     "main": "index.js",
+    "keywords": ["sails","hook","sails-hook","swagger","generator","hook-swagger","sails-swagger"],
     "scripts": {
         "test": "mocha -R spec"
     },
     "sails": {
         "isHook": true
     },
-    "author": "fikou",
+    "author": {
+        "name": "afidoss",
+        "email": "fiacre.ayedoun@gmail.com",
+        "url": "https://about.me/fiacre.ayedoun"
+    },
     "dependencies": {
         "chalk": "^2.4.1",
         "express": "^4.16.3",
@@ -26,5 +31,13 @@
     "repository": {
         "type": "git",
         "url": "git@github.com:afidosstar/sails-hook-swagger.git"
-      } 
+      },
+      "licenses":[
+        { "type": "MIT"
+        , "url": "https://www.opensource.org/licenses/mit-license.php"
+        }
+      , { "type": "Apache-2.0"
+        , "url": "https://opensource.org/licenses/apache2.0.php"
+        }
+      ] 
 }
