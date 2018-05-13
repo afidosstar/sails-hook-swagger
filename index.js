@@ -47,17 +47,6 @@ module.exports = function defineSwaggerHook(sails) {
         swagger.use(options.swaggerJSON, function (req, res) {
           return res.json(api)
         })
-        swagger.use(options.swaggerURL,async function (req, res, next) {
-          if(!options.contentFile){
-            options.contentFile = await readFile(options.uiPathIndex)
-            options.contentFile = options.contentFile.replace(
-              'http://petstore.swagger.io/v2/swagger.json',
-              path.join(options.basePath,options.swaggerJSON)
-            )
-            return res.send(options.contentFile);
-          }
-          res.send(options.contentFile)
-        })
 
 
         return swagger
@@ -96,7 +85,21 @@ module.exports = function defineSwaggerHook(sails) {
       return done();
 
     },
-    routes: {}
+    routes: {
+      before: {
+        [options.swaggerURL]:async function (req, res, next) {
+          if(!options.contentFile){
+            options.contentFile = await readFile(options.uiPathIndex)
+            options.contentFile = options.contentFile.replace(
+              'http://petstore.swagger.io/v2/swagger.json',
+              path.join(options.basePath,options.swaggerJSON)
+            )
+            return res.send(options.contentFile);
+          }
+          res.send(options.contentFile)
+        }
+      }
+    }
 
   };
 
