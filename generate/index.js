@@ -184,6 +184,9 @@ function parseToPaths(routes, paths){
   paths = paths||{}
   _.each(routes,function(route){
     if(['/*','/'].some((x) => x === route.path)) return;
+    if(route.swagger){
+      paths[convertPath(route.path)] = route.swagger
+    }
     paths[convertPath(route.path)] = paths[convertPath(route.path)] || {}
 
     let model = route.path.replace(new RegExp('.*\\/(\\w*)(\\/:\\w*)?\\??$'),"$1");
