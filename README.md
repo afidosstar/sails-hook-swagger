@@ -40,7 +40,7 @@ Key              | Example value                 | Description
 `swaggerVersion` | '2.0'                         | Swagger version.(**optional**)
 `swaggerURL`     | '/api/docs'                   | Path to use for swagger ui web interface.(**required**)
 `swaggerJSON`    | '/api-docs.json'              | Path to use for swagger ui JSON.(**required**)
-`basePath`       | process.env.HOST_NAME \| \| 'http(s)://localhost:1337'      | The basePath for swagger.js .(**required**)
+`basePath`       | process.env.HOST_NAME \| \| 'http://localhost:1337'      | The basePath for swagger.js .(**required**)
 `info`           | { title: '', description: ''} | [Metadata][info] about the API (**optional**)
 `apis`           | ['./api/docs/User.yml']       | Define your api array. (**optional**)
 `ui`             | 'new'                         | Value list complet is:  `new`, `last` or `custom`. Default is `new` 
@@ -110,10 +110,12 @@ we will see :
 
 ![](https://github.com/afidosstar/sails-hook-swagger/raw/master/simples/picture-3.png)
 
-you can also specify filename like:
-sails generate swagger my-api.yml
+you can also specify filename like: sails generate swagger my-api.yml
 
-> Note: commande line can support yml and json output
+> Note: 
+> * commande line can support yml and json output
+> * you can also specify filename like: `sails generate swagger my-api.yml`
+
 
 ## Inject files for look and feel customization, a JS and CSS file
 
@@ -250,7 +252,7 @@ That&rsquo;s it!
 The [MIT](https://github.com/jasancheg/sails-custom-swagger-hook/blob/master/LICENSE) License, © [jasancheg](https://github.com/jasancheg/)
 
 
-[npm-url]: https://npmjs.org/package/sails-custom-swagger-hook
-[npm-image]: https://badge.fury.io/js/sails-custom-swagger-hook.svg?style=flat
+[npm-url]: https://npmjs.org/package/sails-hook-swagger
+[npm-image]: https://badge.fury.io/gh/afidosstar%2Fsails-hook-swagger.svg
 [daviddm-url]: https://david-dm.org/afidosstar/sails-hook-swagger.svg
 [daviddm-image]: https://david-dm.org/afidosstar/sails-hook-swagger.svg
