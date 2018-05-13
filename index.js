@@ -82,9 +82,10 @@ module.exports = function defineSwaggerHook(sails) {
       }else{
         api = _.merge(swaggerGenerator.generate(sails), api)
       }
-      (options.apis||[]).reduce((filename,acc) => {
-        if(extRegExp.test(filename)){
-          let content = /\.(json)$/.test(filename)? await readJSON(path.resolve(sails.config.rootPath,filename)): await readYml(filename);
+      (options.apis||[]).reduce(async (filename,acc) => {
+        let fullname = path.resolve(sails.config.rootPath,filename)
+        if(extRegExp.test(fullname) && fs.existsSync(fullname)){
+          let content = /\.(json)$/.test(filename)? await readJSON(fullname): await readYml(fullname);
           api.paths = _.merge(api.paths||{},content.paths||{})
           api.definitions = _.merge(api.definitions||{},content.definitions||{})
         }
