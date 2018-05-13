@@ -41,7 +41,7 @@ module.exports = function defineSwaggerHook(sails) {
       sails.config.http.middleware[MIDDLE_SWAGGER] =(function _testMiddleware() {
         let express = require('express')
         let  swagger = express()
-        assetsPath  = new RegExp(options.swaggerURL+'\\/(.*)?');
+        assetsPath  = options.swaggerURL;
         swagger.use(assetsPath,express.static(path.join(__dirname, options.uiPath)))
         swagger.use(assetsPath,express.static(options.folder))
         swagger.use(options.swaggerJSON, function (req, res) {
