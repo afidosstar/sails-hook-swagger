@@ -27,7 +27,7 @@ Here is how documentation API page looks like ([sample](https://github.com/jasan
 
 ## Installation
 
-    $ npm install sails-hook-swagger --save
+    $ npm install @afidoss/sails-hook-swagger --save
 
 
 ## Quick Start
