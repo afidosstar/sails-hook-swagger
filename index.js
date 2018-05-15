@@ -46,10 +46,6 @@ module.exports = function defineSwaggerHook(sails) {
 
         swagger.use(assetsPath,async function (req, res, next){
           regexPage = new RegExp('/(\\?.*)?$') 
-          console.log("Exp",regexPage.test(req.path));
-          console.log("RegExp",regexPage);
-          console.log("Resp",req.path);
-          console.log("url",req.url);
           if(regexPage.test(req.path)){
             if(!options.contentFile){
               options.contentFile = await readFile(options.uiPathIndex)
@@ -69,7 +65,7 @@ module.exports = function defineSwaggerHook(sails) {
         swagger.use(options.swaggerJSON, function (req, res) {
           return res.json(api)
         })
-        
+
         return swagger
       })()
       sails.config.http.middleware.order.splice(0,0,MIDDLE_SWAGGER);
