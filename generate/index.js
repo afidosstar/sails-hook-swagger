@@ -53,7 +53,6 @@ module.exports = {
       api.paths = parseToPaths(routes,sails);
       //console.log(api.paths);
       api.definitions = parseModelsToDefinitions(sails.models,sails)
-      console.log('ready');
     return api
   },
 
@@ -97,7 +96,6 @@ module.exports = {
       fs.writeFileSync(path.resolve(scope.rootPath,pathfile),stringApi)
 
       console.log(chalk.blue('Generate docs to: '),chalk.grey(pathfile))
-      console.log('ok');
       sails.lower(done)
     })
   },

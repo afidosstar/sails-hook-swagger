@@ -18,7 +18,6 @@ chai.should()
          sails = Sails();
 
          sails.lift({
-            port: 3000,
             hooks: {
                 // Load the hook
                 "swagger": require('../'),

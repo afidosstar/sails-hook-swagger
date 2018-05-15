@@ -43,24 +43,33 @@ module.exports = function defineSwaggerHook(sails) {
         let express = require('express')
         let  swagger = express()
         assetsPath  = options.swaggerURL;
+
+        swagger.use(assetsPath,async function (req, res, next){
+          regexPage = new RegExp('/(\\?.*)?$') 
+          console.log("Exp",regexPage.test(req.path));
+          console.log("RegExp",regexPage);
+          console.log("Resp",req.path);
+          console.log("url",req.url);
+          if(regexPage.test(req.path)){
+            if(!options.contentFile){
+              options.contentFile = await readFile(options.uiPathIndex)
+              options.contentFile = options.contentFile.replace(
+                "http://petstore.swagger.io/v2/swagger.json",
+                options.fullSwaggerJSONPath
+              )
+              return res.send(options.contentFile);
+            }
+            return res.send(options.contentFile)
+          }
+          next();
+          
+        })
         swagger.use(assetsPath,express.static(options.uiPath))
         swagger.use(assetsPath,express.static(options.folder))
         swagger.use(options.swaggerJSON, function (req, res) {
           return res.json(api)
         })
-        // swagger.use(options.swaggerURL,async function (req, res) {
-        //   console.log('requeste')
-        //   console.log((new RegExp('http://petstore.swagger.io/v2/swagger.json','g')).test(options.contentFile))
-        //   if(!options.contentFile){
-        //     options.contentFile = await readFile(options.uiPathIndex)
-        //     options.contentFile = options.contentFile.replace(
-        //       new RegExp('http://petstore.swagger.io/v2/swagger.json','g'),
-        //       options.fullSwaggerJSONPath
-        //     )
-        //     return res.send(options.contentFile);
-        //   }
-        //   res.send(options.contentFile)
-        // })
+        
         return swagger
       })()
       sails.config.http.middleware.order.splice(0,0,MIDDLE_SWAGGER);
@@ -83,13 +92,11 @@ module.exports = function defineSwaggerHook(sails) {
           await readYml(options.swaggerDocsFile))
         }else{
           api = _.merge(swaggerGenerator.generate(sails),api);
-          console.log(api);
         }
         (options.apis||[]).reduce(async (filename,acc) => {
           let fullname = path.resolve(sails.config.rootPath,filename)
           if(extRegExp.test(fullname) && fs.existsSync(fullname)){
             let content = /\.(json)$/.test(filename)? await readJSON(fullname): await readYml(fullname);
-            console.log(api.paths||{},content.paths||{});
             api.paths = _.merge(api.paths||{},content.paths||{})
             api.definitions = _.merge(api.definitions||{},content.definitions||{})
           }
@@ -102,19 +109,19 @@ module.exports = function defineSwaggerHook(sails) {
 
     },
     routes: {
-      [options.swaggerURL]:async function (req, res) {
-        console.log('requeste')
-        console.log((new RegExp('http://petstore.swagger.io/v2/swagger.json','g')).test(options.contentFile))
-        if(!options.contentFile){
-          options.contentFile = await readFile(options.uiPathIndex)
-          options.contentFile = options.contentFile.replace(
-            new RegExp('http://petstore.swagger.io/v2/swagger.json','g'),
-            options.fullSwaggerJSONPath
-          )
-          return res.send(options.contentFile);
-        }
-        res.send(options.contentFile)
-      }
+      // [options.swaggerURL]:async function (req, res) {
+      //   console.log('requeste')
+      //   console.log((new RegExp('http://petstore.swagger.io/v2/swagger.json','g')).test(options.contentFile))
+      //   if(!options.contentFile){
+      //     options.contentFile = await readFile(options.uiPathIndex)
+      //     options.contentFile = options.contentFile.replace(
+      //       new RegExp('http://petstore.swagger.io/v2/swagger.json','g'),
+      //       options.fullSwaggerJSONPath
+      //     )
+      //     return res.send(options.contentFile);
+      //   }
+      //   res.send(options.contentFile)
+      // }
     }
 
   };
