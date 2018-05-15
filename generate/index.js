@@ -202,10 +202,7 @@ function parseToPaths(routes,sails){
           $ref: "#/definitions/" + _.capitalize(model)
         }
     }:{
-      type: 'object',
-      properties: {
         $ref: '#/definitions/' + _.capitalize(model)
-      }
     }
     let body = [];
     if(!['get','delete'].some(x => x === route.verb)){
