@@ -33,6 +33,7 @@ module.exports = function defineSwaggerHook(sails) {
     apiVersion: options.apiVersion,
     info: options.info 
   };
+  swaggerGenerator.bindListener(sails);
 
   return {
 
@@ -47,19 +48,19 @@ module.exports = function defineSwaggerHook(sails) {
         swagger.use(options.swaggerJSON, function (req, res) {
           return res.json(api)
         })
-        swagger.use(options.swaggerURL,async function (req, res, next) {
-          if(!options.contentFile){
-            options.contentFile = await readFile(options.uiPathIndex)
-            options.contentFile = options.contentFile.replace(
-              'http://petstore.swagger.io/v2/swagger.json',
-              path.join(options.basePath,options.swaggerJSON)
-            )
-            return res.send(options.contentFile);
-          }
-          res.send(options.contentFile)
-        })
-
-
+        // swagger.use(options.swaggerURL,async function (req, res) {
+        //   console.log('requeste')
+        //   console.log((new RegExp('http://petstore.swagger.io/v2/swagger.json','g')).test(options.contentFile))
+        //   if(!options.contentFile){
+        //     options.contentFile = await readFile(options.uiPathIndex)
+        //     options.contentFile = options.contentFile.replace(
+        //       new RegExp('http://petstore.swagger.io/v2/swagger.json','g'),
+        //       options.fullSwaggerJSONPath
+        //     )
+        //     return res.send(options.contentFile);
+        //   }
+        //   res.send(options.contentFile)
+        // })
         return swagger
       })()
       sails.config.http.middleware.order.splice(0,0,MIDDLE_SWAGGER);
@@ -71,32 +72,50 @@ module.exports = function defineSwaggerHook(sails) {
      * @param {Function} done
      */
     initialize: async function (done) {
-      let extRegExp = /\.(json|yml|yaml)$/;
-      if(options.docsFile && fs.existsSync(options.swaggerDocsFile)){
-        if(!extRegExp.test(options.swaggerDocsFile)){
-          throw new Error("Unknow extension.Extension alowed are: json, yml, yaml");
-       }
-        api = _.merge(/\.(json)$/.test(options.swaggerDocsFile)?
-        await readJSON(options.swaggerDocsFile):
-        await readYml(options.swaggerDocsFile)
-        ,api)
-      }else{
-        api = _.merge(swaggerGenerator.generate(sails), api)
-      }
-      (options.apis||[]).reduce(async (filename,acc) => {
-        let fullname = path.resolve(sails.config.rootPath,filename)
-        if(extRegExp.test(fullname) && fs.existsSync(fullname)){
-          let content = /\.(json)$/.test(filename)? await readJSON(fullname): await readYml(fullname);
-          console.log(api.paths||{},content.paths||{});
-          api.paths = _.merge(api.paths||{},content.paths||{})
-          api.definitions = _.merge(api.definitions||{},content.definitions||{})
+      sails.on("ready",async ()=>{ 
+        let extRegExp = /\.(json|yml|yaml)$/;
+        if(options.docsFile && fs.existsSync(options.swaggerDocsFile)){
+          if(!extRegExp.test(options.swaggerDocsFile)){
+            throw new Error("Unknow extension.Extension alowed are: json, yml, yaml");
         }
-      },api)
+          api = _.merge(api, /\.(json)$/.test(options.swaggerDocsFile)?
+          await readJSON(options.swaggerDocsFile):
+          await readYml(options.swaggerDocsFile))
+        }else{
+          api = _.merge(swaggerGenerator.generate(sails),api);
+          console.log(api);
+        }
+        (options.apis||[]).reduce(async (filename,acc) => {
+          let fullname = path.resolve(sails.config.rootPath,filename)
+          if(extRegExp.test(fullname) && fs.existsSync(fullname)){
+            let content = /\.(json)$/.test(filename)? await readJSON(fullname): await readYml(fullname);
+            console.log(api.paths||{},content.paths||{});
+            api.paths = _.merge(api.paths||{},content.paths||{})
+            api.definitions = _.merge(api.definitions||{},content.definitions||{})
+          }
+        },api)
+      });
+      //console.log(api);
+      
     
       return done();
 
     },
-    routes: {}
+    routes: {
+      [options.swaggerURL]:async function (req, res) {
+        console.log('requeste')
+        console.log((new RegExp('http://petstore.swagger.io/v2/swagger.json','g')).test(options.contentFile))
+        if(!options.contentFile){
+          options.contentFile = await readFile(options.uiPathIndex)
+          options.contentFile = options.contentFile.replace(
+            new RegExp('http://petstore.swagger.io/v2/swagger.json','g'),
+            options.fullSwaggerJSONPath
+          )
+          return res.send(options.contentFile);
+        }
+        res.send(options.contentFile)
+      }
+    }
 
   };
 
@@ -183,33 +202,3 @@ function generate(opt) {
   );
   return opt;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

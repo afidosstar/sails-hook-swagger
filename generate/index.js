@@ -26,27 +26,18 @@ let api = {};
 
 module.exports = {
 
-  /**
-   * `before()` is run before executing any of the `targets`
-   * defined below.
-   *
-   * This is where we can validate user input, configure default
-   * scope variables, get extra dependencies, and so on.
-   *
-   * @param  {Dictionary} scope
-   * @param  {Function} done
-   */
-
-  generate: function(sails){
-    let options = verifyOptions(sails.config.swagger);
+  bindListener: function(sails){
     sails.on('router:bind',function (route) {
       let exclude = ['find','create','update', 'destroy','add','replace',
         'csrfToken', 'csrftoken', '__getcookie', 'remove','__getcookie']
-
       if(!new RegExp(exclude.join('|')).test(route.path)){
         routes.push(route)
       }
+      //console.log('bind')
     })
+  },
+  generate: function(sails){
+    let options = verifyOptions(sails.config.swagger);
     api = {
       swagger: options.swaggerVersion || '2.0',
       basePath: '/',
@@ -59,15 +50,27 @@ module.exports = {
       paths: paths,
       definitions: definitions
     }
-    parseToPaths(routes,paths);
-    parseModelsToDefinitions(sails.models,definitions)
-
+      api.paths = parseToPaths(routes,sails);
+      //console.log(api.paths);
+      api.definitions = parseModelsToDefinitions(sails.models,sails)
+      console.log('ready');
     return api
   },
 
+  /**
+   * `before()` is run before executing any of the `targets`
+   * defined below.
+   *
+   * This is where we can validate user input, configure default
+   * scope variables, get extra dependencies, and so on.
+   *
+   * @param  {Dictionary} scope
+   * @param  {Function} done
+   */
+
   before: function (scope, done) {
 
-
+    module.exports.bindListener(sails);
 
     sails.load({
       models: {
@@ -85,15 +88,16 @@ module.exports = {
       if(!/\.(json|yml|yaml)$/.test(pathfile)){
          throw new Error("Unknow extension.Extension alowed are: json, yml, yaml");
       }
-      if(/\.(json)$/){
-        let  jsonApi = JSON.stringify(api,null,4);
-        fs.writeFileSync(path.resolve(scope.rootPath,pathfile),jsonApi)
+      let  stringApi = ''
+      if(/\.(json)$/.test(pathfile)){
+        stringApi = JSON.stringify(api,null,4);
       }else{
-        let ymlApi = yaml.safeDump(api,{skipInvalid:true})
-        fs.writeFileSync(path.resolve(scope.rootPath,pathfile),ymlApi)
+        stringApi = yaml.safeDump(api,{skipInvalid:true})
       }
+      fs.writeFileSync(path.resolve(scope.rootPath,pathfile),stringApi)
 
       console.log(chalk.blue('Generate docs to: '),chalk.grey(pathfile))
+      console.log('ok');
       sails.lower(done)
     })
   },
@@ -180,12 +184,12 @@ function summary(route){
   }
 }
 
-function parseToPaths(routes, paths){
-  paths = paths||{}
+function parseToPaths(routes,sails){
+  let paths ={};
   _.each(routes,function(route){
     if(['/*','/'].some((x) => x === route.path)) return;
     if(route.swagger){
-      paths[convertPath(route.path)] = route.swagger
+      paths[convertPath(route.path)] = route.swagger||{}
     }
     paths[convertPath(route.path)] = paths[convertPath(route.path)] || {}
 
@@ -211,11 +215,9 @@ function parseToPaths(routes, paths){
         "$ref": '#/definitions/' + _.capitalize(model)
       })
     }
-
     let tags = route.path.replace(sails.config.blueprints.prefix,'')
     .split('/').filter((x) => x && !/:/.test(x) )
-
-
+    
 
 
     paths[convertPath(route.path)][route.verb] = {
@@ -277,7 +279,7 @@ function paramsPath(route){
   })
 }
 
-function parseModelsToDefinitions(models,definitions){
+function parseModelsToDefinitions(models,sails){
   definitions = definitions||{}
   _.each(models, function(value, key){
     definitions[_.capitalize(key)] = {
@@ -285,7 +287,7 @@ function parseModelsToDefinitions(models,definitions){
       required: [
         "id"
       ],
-      ...waterlineModelParser(value.attributes)
+      ...waterlineModelParser(value.attributes,sails)
     };
     //definitions['New' + _.capitalize(key)] = _.omit(definitions[_.capitalize(key)],)
   });
