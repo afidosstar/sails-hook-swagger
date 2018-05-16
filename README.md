@@ -45,7 +45,8 @@ Key              | Example value                 | Description
 `apis`           | ['./api/docs/User.yml']       | Define your api array. (**optional**)
 `ui`             | 'new'                         | Value list complet is:  `new`, `last` or `custom`. Default is `new` 
 `uiIndex`        | 'index.html'                  | Index of ui .Default is `index.html`
-`swaggerDocsFile`| 'assets/api/docs-api.json'    | manuelly set documentation of api on format json or yml.use this un production
+`docsFile`       | true                          | Is used for load documentation with file
+`swaggerDocsFile`| 'assets/api/docs-api.json'    | manuelly set documentation of api on format json or yml.use this un production after set `docsFile` to true
 `uiPath`         | '/path-of-swagger-ui'         | if ui= custom, you must specify this,otherwise that will throw error
 `folder`         |'/assets/docs'                 | Path to folder where `custom-swagger.css` and `custom-swagger.js` are stored (**optional**)
 

@@ -169,6 +169,19 @@ function generate(opt) {
   if(opt.ui.toLowerCase() == 'custom' && !opt.uiPath){
     throw new Error('For custom ui ,you must specify uiPath');
   }
+  if(opt.docsFile){
+    if(fs.existsSync(opt.swaggerDocsFile)){
+      console.log(
+        chalk.blue('Use docs file:             '),
+        opt.swaggerDocsFile
+      )
+    }else{
+      console.log(
+        chalk.yellow('Warning:                     '),
+        chalk.red('This will not be worked correctly.please specify file swagger attribute "swaggerDocsFile"'),
+      )
+    }
+  }
 
   if(/^last|new$/i.test(opt.ui)){
     opt.uiPath = path.join(__dirname,opt.ui + '-ui');
