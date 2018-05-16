@@ -5,6 +5,7 @@ var models = require('./../fixtures/models');
 var swagger = require('./../fixtures/swagger');
 var chai = require('chai')
 var chaiHttp = require('chai-http');
+var fs = require('fs');
 chai.use(chaiHttp);
 chai.should()
 expect = chai.expect
@@ -93,13 +94,16 @@ describe("Check api response",function(){
 
 
 
-    it('#should have User in definitions',function(done){
+    it('#should have models is convert to definitions',function(done){
         request().get('/api-docs.json')
         .end(function(err,resp){
             if(err) return done(err);
             expect(resp).to.have.status(200)
             expect(resp.body).to.have.property('definitions')
             expect(resp.body.definitions).to.have.property('User');
+            expect(resp.body.definitions).to.have.property('Credential');
+            expect(resp.body.definitions).to.have.property('Category');
+            expect(resp.body.definitions).to.have.property('Post');
             done()
         })
     })
@@ -127,14 +131,33 @@ describe("Check api response",function(){
         })
     })
 
-    it('#should containe swagger json url', function(){
+    it('#should redirect /api/docs to /api/docs/', function(){
         request().get('/api/docs').end(function(err,resp){
+            if(err) throw err
+            expect(resp).to.redirect;
+        })
+    })
+
+    it('#should containe swagger json url', function(){
+        request().get('/api/docs/').end(function(err,resp){
             if(err) throw err
             expect(resp).to.have.status(200)
             expect(resp).to.be.html;
             expect(resp.text).to.be.contain(swagger.swaggerJSON);
             
         })
+    })
+
+    it('#should link assets', function(){
+        var files = fs.readdirSync(__dirname +  '/../assets');
+        var uiFiles = fs.readdirSync(__dirname +  '/../new-ui');
+        files.concat(uiFiles).forEach(function(file){
+            request().get('/api/docs/'+file).end(function(err,resp){
+                if(err) throw err
+                expect(resp).to.have.status(200)
+            })
+        });
+
     })
 
 })

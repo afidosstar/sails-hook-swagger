@@ -43,6 +43,14 @@ module.exports = function defineSwaggerHook(sails) {
         let express = require('express')
         let  swagger = express()
         assetsPath  = options.swaggerURL;
+        
+        swagger.use(function (req, res, next){
+          apath = new RegExp(assetsPath+'$')
+          if(apath.test(req.path)){
+            return res.redirect(assetsPath + '/');
+          }
+          next();
+        })
 
         swagger.use(assetsPath,async function (req, res, next){
           regexPage = new RegExp('/(\\?.*)?$') 
