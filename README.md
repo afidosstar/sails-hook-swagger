@@ -8,7 +8,7 @@
 
 * [swagger.io](http://swagger.io/) hook for [Sails JS](http://sailsjs.org/).
 * Customized to support the Swagger 2.0 specification, it is a simple and clean solution to integrate swagger with Sails JS, the application's models, controllers, and routes are automatically aggregated and transformed into a Swagger Document.
-* Based in forks(outdated) of [swagger-express](https://github.com/fliptoo/swagger-express), [sails-swagger](https://github.com/tjwebb/sails-swagger) and [sails-swagr](https://github.com/qbanguy/sails-swagr), but uptate and personalize to use with up to date dependencies and with a couple of extra features for allow inject CSS and JS files for brand personalization.
+* Based in forks(outdated) of [swagger-express](https://github.com/fliptoo/swagger-express), [sails-swagger](https://github.com/tjwebb/sails-swagger), [sails-swagr](https://github.com/qbanguy/sails-swagr) and [sails-custom-swagger-hook][https://github.com/jasancheg/sails-custom-swagger-hook], but uptate and personalize to use with up to date dependencies and with a couple of extra features for allow inject CSS and JS files for brand personalization.
 
 
 ### Summary
@@ -250,7 +250,7 @@ That&rsquo;s it!
 
 ## License
 
-The [MIT](https://github.com/jasancheg/sails-custom-swagger-hook/blob/master/LICENSE) License, © [jasancheg](https://github.com/jasancheg/)
+The [MIT](https://github.com/jasancheg/sails-custom-swagger-hook/blob/master/LICENSE) License, © [afidoss](https://github.com/afidosstar)
 
 
 [npm-url]: https://npmjs.org/package/sails-hook-swagger
