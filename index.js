@@ -177,7 +177,7 @@ function generate(opt) {
       )
     }else{
       console.log(
-        chalk.yellow('Warning:                     '),
+        chalk.yellow('Warning:                  '),
         chalk.red('This will not be worked correctly.please specify file swagger attribute "swaggerDocsFile"'),
       )
     }
