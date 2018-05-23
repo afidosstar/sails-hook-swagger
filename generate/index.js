@@ -129,8 +129,8 @@ function waterlineModelParser(attributes) {
     if(val.type){
       attrs[key] = {
         type: _.capitalize(val.type),
-        required: val.required || false,
-        nullable: val.allowNull || false,
+        required: !!val.required,
+        nullable: !!val.allowNull,
 
       };
 
@@ -191,7 +191,7 @@ function parseToPaths(routes,sails){
     }
     paths[convertPath(route.path)] = paths[convertPath(route.path)] || {}
 
-    let model = route.path.replace(new RegExp('.*\\/(\\w*)(\\/:\\w*)?\\??$'),"$1");
+    let model = route.options.model||route.path.replace(new RegExp('.*\\/(\\w*)(\\/:\\w*)?\\??$'),"$1");
     model = model.replace(/(.+)\.(.+)/,'$1')
     .split('_').map((x) => _.capitalize(x)).join('')
 
