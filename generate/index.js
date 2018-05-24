@@ -241,7 +241,6 @@ function parseToPaths(routes,sails,definitions){
             name: model,
             in: 'body',
             description: `'${model}' property of ${model}`,
-            required: !!value.required,
             schema: definition
           })
         }
