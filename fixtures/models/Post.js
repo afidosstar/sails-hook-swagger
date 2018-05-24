@@ -13,6 +13,10 @@ module.exports = {
         author: {
             model: 'user'
         },
+        status:{
+            type: 'string',
+            isIn: ['PUPLUSHED','EDITING','LOKED']
+        },
         categories:{
             collection: 'category',
             via: 'posts',

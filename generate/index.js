@@ -50,9 +50,9 @@ module.exports = {
       paths: paths,
       definitions: definitions
     }
-      api.paths = parseToPaths(routes,sails);
+    api.definitions = parseModelsToDefinitions(sails.models,sails)
+      api.paths = parseToPaths(routes,sails,api.definitions);
       //console.log(api.paths);
-      api.definitions = parseModelsToDefinitions(sails.models,sails)
     return api
   },
 
@@ -133,9 +133,8 @@ function waterlineModelParser(attributes) {
         nullable: !!val.allowNull,
 
       };
-
-      if(val.isIn){
-        attrs[key]['enum'] = val.isIn
+      if(val.validations && val.validations.isIn){
+        attrs[key]['enum'] = val.validations.isIn
       }
     }
     if(val.collection){
@@ -182,9 +181,10 @@ function summary(route){
   }
 }
 
-function parseToPaths(routes,sails){
+function parseToPaths(routes,sails,definitions){
   let paths ={};
   _.each(routes,function(route){
+    // ignore route default path of middleware
     if(['/*','/'].some((x) => x === route.path)) return;
     if(route.swagger){
       paths[convertPath(route.path)] = route.swagger||{}
@@ -205,7 +205,48 @@ function parseToPaths(routes,sails){
         $ref: '#/definitions/' + _.capitalize(model)
     }
     let body = [];
+    let bodyParamsReader = function(definition,body = []){
+
+    }
     if(!['get','delete'].some(x => x === route.verb)){
+      if(definitions[model]){
+        let definition = definitions[model]
+        if(definition["properties"]){
+          _.each(definition["properties"],function (value,key) {
+            if(value.type && value.type !== 'array'){
+              body.push({
+                name: key,
+                in: 'body',
+                description: `'${key}' property of ${model}`,
+                required: !!value.required,
+                schema:{
+                  type: value.type,
+                  ...(value.enum ? {format: value.enum} : {})
+                }
+              })
+            }else{
+              body.push({
+                name: key,
+                in: 'body',
+                description: `'${key}' property of ${model}`,
+                required: !!value.required,
+                schema:value
+              })
+            }
+
+          })
+        }
+        if(definition["allOf"]){
+          body.push({
+            name: key,
+            in: 'body',
+            description: `'${key}' property of ${model}`,
+            required: !!value.required,
+            schema: definition
+          })
+        }
+      }
+
       body.push({
         "$ref": '#/definitions/' + _.capitalize(model)
       })

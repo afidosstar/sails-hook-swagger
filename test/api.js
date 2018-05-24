@@ -27,7 +27,7 @@ describe("Check api response",function(){
                     createdAt: { type: 'number', autoCreatedAt: true, },
                     updatedAt: { type: 'number', autoUpdatedAt: true, },
                     
-                    id: { type: 'string', columnName: '_id'},
+                    id: { type: 'string', columnName: '_id',autoIncrement: true},
                     deletedAt: { type: 'string', columnName: 'datetime' },
                   },
                   dataEncryptionKeys: {

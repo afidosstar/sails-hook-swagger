@@ -6,5 +6,10 @@ module.exports = {
     },
     password: {
         type: 'string'
-    }
+    },
+   user:{
+    model: 'user',
+    required: true,
+    //unique: true,
+  }
 }
