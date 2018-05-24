@@ -238,9 +238,9 @@ function parseToPaths(routes,sails,definitions){
         }
         if(definition["allOf"]){
           body.push({
-            name: key,
+            name: model,
             in: 'body',
-            description: `'${key}' property of ${model}`,
+            description: `'${model}' property of ${model}`,
             required: !!value.required,
             schema: definition
           })
