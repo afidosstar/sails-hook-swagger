@@ -128,7 +128,7 @@ function waterlineModelParser(attributes) {
   _.each(attributes, function(val, key) {
     if(val.type){
       attrs[key] = {
-        type: _.capitalize(val.type),
+        type: _.toLower(val.type),
         required: !!val.required,
         nullable: !!val.allowNull,
 
